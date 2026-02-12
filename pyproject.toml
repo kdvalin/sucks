@@ -1,3 +1,6 @@
 [project]
 name = "sucks"
 dynamic = ["version"]
+
+[project.scripts]
+sucks="sucks.main:main"
