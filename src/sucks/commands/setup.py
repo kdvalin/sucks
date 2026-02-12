@@ -10,3 +10,4 @@ def setup_cli_options(subparser: argparse._SubParsersAction):
 
 def setup(args: argparse.Namespace):
     print("time for setup")
+    print(args.container)

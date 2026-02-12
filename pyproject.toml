@@ -1,6 +1,11 @@
 [project]
 name = "sucks"
 dynamic = ["version"]
+dependencies = [
+    "PyYAML",
+    "pydantic"
+]
+
 
 [project.scripts]
 sucks="sucks.main:main"
