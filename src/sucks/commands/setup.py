@@ -32,5 +32,10 @@ def setup(args: argparse.Namespace):
     command.append(target_container.image)
 
     logger.debug(f"Running \"{" ".join(command)}\"")
-    subprocess.run(command)
+    proc = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    if proc.returncode != 0:
+        logger.critical(f"Could not initialize {target_container.filename}, see stderr")
+        print(proc.stderr.decode('utf-8'))
+        exit(1)
     

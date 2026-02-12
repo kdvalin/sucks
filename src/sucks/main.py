@@ -12,7 +12,7 @@ from .models import ContainerDefinition
 logger = logging.Logger("sucks")
 
 def main():
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", logging.WARNING).upper())
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARNING").upper())
 
     parser = argparse.ArgumentParser(prog=__package__)
     parser.add_argument("container_yaml_file", type=argparse.FileType('r'))
