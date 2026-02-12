@@ -1,2 +1,2 @@
 name: bob
-image: quay.io
+image: registry.access.redhat.com/ubi9-init
