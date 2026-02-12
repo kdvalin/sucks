@@ -4,3 +4,7 @@ dynamic = ["version"]
 
 [project.scripts]
 sucks="sucks.main:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "sucks.__version__"}
+readme = {file=["README.md"]}
