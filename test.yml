@@ -1,2 +1,2 @@
 name: bob
-image: registry.access.redhat.com/ubi9-init
+image: registry.access.redhat.com/ubi10-init
