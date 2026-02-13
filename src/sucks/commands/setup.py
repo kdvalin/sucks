@@ -34,7 +34,7 @@ def setup(args: argparse.Namespace):
                 detach=True,
                 name=f"sucks-{target_container.filename}",
                 privileged=args.privileged
-            )
+            ).start()
         except podman.errors.ImageNotFound as e:
             logger.critical(f"Could find image")
             logger.critical(e)
