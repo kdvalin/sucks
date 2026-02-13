@@ -1,25 +1,25 @@
 import logging
 import podman
-from ..utils import container_exists
 
-import io
-from typing import List
+from ._base import Command
 from ..models import ContainerDefinition
 import argparse
 
 logger = logging.getLogger("sucks")
 
-def destroy_cli_options(subparser: argparse._SubParsersAction):
-    parser = subparser.add_parser("destroy")
+
+class Destroy(Command):
+    _command = "destroy"
+
+    def cli_opts(self, subparser: argparse._SubParsersAction):
+        parser = subparser.add_parser(self._command)
 
 
-def destroy(args: argparse.Namespace):
-    target_container: ContainerDefinition = args.container
-    container_name = f"sucks-{target_container.filename}"
-    logger.info(f"Tearing down container named {container_name}")
-    
+    def run_command(self, args: argparse.Namespace, client: podman.PodmanClient):
+        target_container: ContainerDefinition = args.container
+        container_name = f"sucks-{target_container.filename}"
+        logger.info(f"Tearing down container named {container_name}")        
 
-    with podman.PodmanClient() as client:
         if not client.containers.exists(container_name):
             logger.error(f"Container sucks-{target_container.filename} does not exist")
             exit(1)
