@@ -25,4 +25,9 @@ def main():
 
     container_obj = yaml.safe_load(args.container_yaml_file)
     args.container = ContainerDefinition(**container_obj, filename=pathlib.Path(args.container_yaml_file.name).stem)
-    sucks.commands.COMMANDS[args.command].run_command(args, podman.PodmanClient())
+
+    with podman.PodmanClient() as client:
+        if not client.ping():
+            logging.critical("Cannot communicate with podman socket")
+            exit(1)
+        sucks.commands.COMMANDS[args.command].run_command(args, client)
