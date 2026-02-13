@@ -3,10 +3,11 @@ import logging
 from pydantic import TypeAdapter
 import yaml
 import os
+import podman
 import pathlib
 
 from . import __version__
-from .commands import build_subparsers, run_command
+import sucks.commands
 from .models import ContainerDefinition
 
 logger = logging.Logger("sucks")
@@ -19,11 +20,9 @@ def main():
     parser.add_argument("--version", action="version", version=__version__)
     
     subparsers = parser.add_subparsers(help="subcommand help", dest="command")
-    build_subparsers(subparsers)
+    sucks.commands.setup_commands(subparsers)
     args = parser.parse_args()
 
     container_obj = yaml.safe_load(args.container_yaml_file)
     args.container = ContainerDefinition(**container_obj, filename=pathlib.Path(args.container_yaml_file.name).stem)
-
-    run_command(args.command, args)
-    
+    sucks.commands.COMMANDS[args.command].run_command(args, podman.PodmanClient())

@@ -1,18 +1,15 @@
 import argparse
+from typing import List, Dict
 
-from .setup import setup, setup_cli_options
-from .destroy import destroy, destroy_cli_options
+from ._base import Command, COMMANDS
+from .setup import Setup
 
-COMMANDS = {
-    "setup": setup,
-    "destroy": destroy
-}
+COMMANDS: Dict[str, Command] = {}
 
-_SETUP_COMMANDS = [setup_cli_options, destroy_cli_options]
 
-def build_subparsers(subparser: argparse._SubParsersAction):
-    for i in _SETUP_COMMANDS:
-        i(subparser)
+def setup_commands(subparser: argparse._SubParsersAction):
+    _commands_to_setup: List[Command] = [Setup()]
 
-def run_command(command: str, args: argparse.Namespace):
-    COMMANDS[command](args)
+    for i in _commands_to_setup:
+        COMMANDS[i._command] = i
+        i.cli_opts(subparser)
