@@ -5,8 +5,6 @@ import logging
 from ._base import Command
 from sucks.models import ContainerDefinition
 
-logger = logging.Logger("sucks")
-
 class Setup(Command):
     _command = "setup"
 
@@ -21,14 +19,14 @@ class Setup(Command):
         container_name = f"sucks-{container_def.filename}"
         
         if client.containers.exists(container_name):
-            logger.error(f"Container {container_name} already exists")
+            self._logger.error(f"Container {container_name} already exists")
             exit(1)
         
         try:
             client.images.pull(container_def.image)
         except podman.errors.APIError as e:
-            logger.critical(f"Could not pull {container_def.image}")
-            logger.critical(e)
+            self._logger.critical(f"Could not pull {container_def.image}")
+            self._logger.critical(e)
             exit(1)
         
         try:
@@ -37,6 +35,6 @@ class Setup(Command):
                 name=container_name
             ).start()
         except podman.errors.APIError as e:
-            logger.critical(f"Could not start contianer")
-            logger.critical(e)
+            self._logger.critical(f"Could not start contianer")
+            self._logger.critical(e)
             exit(1)

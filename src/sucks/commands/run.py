@@ -5,8 +5,6 @@ import logging
 from ._base import Command
 from sucks.models import ContainerDefinition
 
-logger = logging.getLogger("sucks")
-
 class RunCommand(Command):
     _command = "run"
 
@@ -24,13 +22,14 @@ class RunCommand(Command):
         container_name = f"sucks-{container_def.filename}"
 
         if not client.containers.exists(container_name):
-            logger.critical(f"No container named {container_name} exists")
+            self._logger.critical(f"No container named {container_name} exists")
             exit(1)
         
-        logger.info(f"Running \"{" ".join(args.exec_command)}\" in {container_name}")
+        self._logger.info(f"Running \"{" ".join(args.exec_command)}\" in {container_name}")
         rtc, output = client.containers.get(container_name).exec_run(
             args.exec_command
         )
 
         print(output.decode('utf-8'), end="")
+        self._logger.info(f"Got return code {rtc}")
         exit(rtc)
