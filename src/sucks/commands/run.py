@@ -1,5 +1,5 @@
 import argparse
-import podman
+import subprocess
 import logging
 
 from ._base import Command
@@ -26,10 +26,13 @@ class RunCommand(Command):
             exit(1)
         
         self._logger.info(f"Running \"{" ".join(args.exec_command)}\" in {container_name}")
-        rtc, output = client.containers.get(container_name).exec_run(
-            args.exec_command
-        )
 
-        print(output.decode('utf-8'), end="")
-        self._logger.info(f"Got return code {rtc}")
-        exit(rtc)
+        cmd = ["podman", "exec"]
+        if args.tty or args.interactive:
+            cmd.append(f"-{"i" if args.interactive else ""}{"t" if args.tty else ""}")
+        cmd.append(container_name)
+        cmd.extend(args.exec_command)
+
+        proc = subprocess.run(cmd)
+        self._logger.info(f"Recevied rtc {proc.returncode}")
+        exit(proc.returncode)
