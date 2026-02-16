@@ -5,12 +5,13 @@ from ._base import Command, COMMANDS
 from .setup import Setup
 from .destroy import Destroy
 from .run import RunCommand
+from .shell import Shell
 
 COMMANDS: Dict[str, Command] = {}
 
 
 def setup_commands(subparser: argparse._SubParsersAction):
-    _commands_to_setup: List[Command] = [Setup(), Destroy(), RunCommand()]
+    _commands_to_setup: List[Command] = [Setup(), Destroy(), RunCommand(), Shell()]
 
     for i in _commands_to_setup:
         COMMANDS[i._command] = i
