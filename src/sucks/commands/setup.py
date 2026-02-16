@@ -3,7 +3,7 @@ import podman
 import logging
 
 from ._base import Command
-from sucks.models import ContainerDefinition
+from sucks.models import ContainerDefinition, SetupArgs
 
 from typing import List, Dict
 
@@ -34,11 +34,10 @@ class Setup(Command):
 
     def cli_opts(self, subparser: argparse._SubParsersAction):
         parser = subparser.add_parser(self._command)
-        parser.add_argument("-v", "--volume", type=str, action="append", help="A podman volume string to mount a host dir into the container", default=[])
-        parser.add_argument("--privileged", action="store_true", help="Give extended priviledges to the container", default=False)
+        SetupArgs.add_args(parser)
 
 
-    def run_command(self, args: argparse.Namespace, client: podman.PodmanClient):
+    def run_command(self, args: SetupArgs, client: podman.PodmanClient):
         container_def: ContainerDefinition = args.container
         container_name = f"sucks-{container_def.filename}"
         

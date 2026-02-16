@@ -2,7 +2,7 @@ import logging
 import podman
 
 from ._base import Command
-from ..models import ContainerDefinition
+from ..models import ContainerDefinition, BaseArgs
 import argparse
 
 class Destroy(Command):
@@ -11,8 +11,7 @@ class Destroy(Command):
     def cli_opts(self, subparser: argparse._SubParsersAction):
         parser = subparser.add_parser(self._command)
 
-
-    def run_command(self, args: argparse.Namespace, client: podman.PodmanClient):
+    def run_command(self, args: BaseArgs, client: podman.PodmanClient):
         target_container: ContainerDefinition = args.container
         container_name = f"sucks-{target_container.filename}"
         self._logger.info(f"Tearing down container named {container_name}")        
