@@ -25,6 +25,9 @@ class RunCommand(Command):
         cmd = ["podman", "exec"]
         if args.tty or args.interactive:
             cmd.append(f"-{"i" if args.interactive else ""}{"t" if args.tty else ""}")
+        
+        if args.workdir != None:
+            cmd.extend(["-w", args.workdir])
         cmd.append(container_name)
         cmd.extend(args.exec_command)
 
