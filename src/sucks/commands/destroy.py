@@ -1,9 +1,8 @@
-import logging
+import argparse
 import podman
 
 from ._base import Command
-from ..models import ContainerDefinition, BaseArgs
-import argparse
+from ..models import BaseArgs
 
 class Destroy(Command):
     _command = "destroy"

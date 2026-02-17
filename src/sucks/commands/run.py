@@ -1,9 +1,8 @@
 import argparse
-import subprocess
-import logging
+import podman
 
 from ._base import Command
-from sucks.models import ContainerDefinition, RunArgs
+from sucks.models import RunArgs
 
 class RunCommand(Command):
     _command = "run"

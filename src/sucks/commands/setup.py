@@ -1,12 +1,9 @@
 import argparse
 import podman
-import logging
 import shlex
 
 from ._base import Command
-from sucks.models import ContainerDefinition, SetupArgs
-
-from typing import List, Dict
+from sucks.models import SetupArgs
 
 class Setup(Command):
     _command = "setup"

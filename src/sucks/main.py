@@ -1,6 +1,5 @@
 import argparse
 import logging
-from pydantic import TypeAdapter
 import yaml
 import os
 import podman

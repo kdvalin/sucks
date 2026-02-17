@@ -8,11 +8,11 @@ class Command(abc.ABC):
     _command = "noop"
     _logger = logging.getLogger("sucks")
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def cli_opts(self, subparser: argparse._SubParsersAction) -> None:
         raise NotImplementedError("Function not implemented")
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def run_command(self, args: argparse.Namespace) -> None:
         raise NotImplementedError("Function not implemented")
 

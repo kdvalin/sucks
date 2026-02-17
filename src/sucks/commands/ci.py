@@ -1,12 +1,8 @@
 import argparse
-import podman
-import logging
 import shlex
 
 from ._base import Command
-from sucks.models import ContainerDefinition, BaseArgs
-
-from typing import List, Dict
+from sucks.models import BaseArgs
 
 class CICommand(Command):
     _command = "ci"

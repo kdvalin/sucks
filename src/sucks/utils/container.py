@@ -4,7 +4,7 @@ import subprocess
 
 from podman.domain.containers import Container
 from sucks.models import ContainerDefinition
-from typing import Dict, List
+from typing import Dict, List, Union
 
 class ContainerManager:
     _definition: ContainerDefinition
@@ -19,8 +19,11 @@ class ContainerManager:
     def _container_name(self) -> str:
         return self._definition.container_name
 
-    def _parse_volume_strs(self, vols: List[str]) -> Dict[str, object]:
+    def _parse_volume_strs(self, vols: Union[List[str] | None]) -> Dict[str, object]:
         output = {}
+
+        if vols is None:
+            return output
 
         for vol in vols:
             vol_args = vol.split(':')
@@ -53,6 +56,7 @@ class ContainerManager:
         try:
             self._container.kill()
         except podman.errors.APIError as e:
+            self._logger.error(e)
             return False
         return True
 
@@ -64,7 +68,7 @@ class ContainerManager:
             return False
         return True
 
-    def create(self, privileged: bool = False, volumes: List[str] = []) -> bool:
+    def create(self, privileged: bool = False, volumes: List[str] = None) -> bool:
         try:
             self._client.containers.create(
                 self._definition.image,
@@ -74,7 +78,7 @@ class ContainerManager:
                 volumes=self._parse_volume_strs(volumes)
             ).start()
         except podman.errors.APIError as e:
-            self._logger.info(e)
+            self._logger.error(e)
             return False
         return True
     

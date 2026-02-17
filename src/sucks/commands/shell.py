@@ -1,8 +1,8 @@
 import argparse
 import podman
+
 from ._base import Command
-from .run import RunCommand
-from sucks.models import ShellArgs, RunArgs
+from sucks.models import ShellArgs
 
 class Shell(Command):
     _command = "shell"
