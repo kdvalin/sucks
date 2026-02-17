@@ -2,3 +2,7 @@ name: bob
 image: registry.access.redhat.com/ubi9-init
 initSteps:
   - dnf install -y git jq
+ciSteps:
+  - echo billybob
+  - sleep 6
+  - echo wake up
