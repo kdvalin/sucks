@@ -1,6 +1,7 @@
 import argparse
 import podman
 import logging
+import shlex
 
 from ._base import Command
 from sucks.models import ContainerDefinition, BaseArgs
@@ -20,7 +21,7 @@ class CICommand(Command):
         
         for step in args.container.ciSteps:
             rtc = args.conman.exec(
-                step.split(' ')
+                shlex.split(step)
             )
 
             if rtc != 0:

@@ -1,6 +1,7 @@
 import argparse
 import podman
 import logging
+import shlex
 
 from ._base import Command
 from sucks.models import ContainerDefinition, SetupArgs
@@ -30,12 +31,12 @@ class Setup(Command):
         )
 
         if not create_result:
-            self._logger.critical(f"Could not start contianer {args.container.container_name}")
+            self._logger.critical(f"Could not start container {args.container.container_name}")
             exit(1)
         
         for step in args.container.initSteps:
             rtc = args.conman.exec(
-                step.split(' ')
+                shlex.split(step)
             )
 
             if rtc != 0:

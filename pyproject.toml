@@ -3,7 +3,8 @@ name = "sucks"
 dynamic = ["version"]
 dependencies = [
     "PyYAML",
-    "pydantic"
+    "pydantic",
+    "podman"
 ]
 
 

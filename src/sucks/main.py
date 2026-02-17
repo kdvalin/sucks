@@ -9,9 +9,9 @@ import pathlib
 from . import __version__
 import sucks.commands
 from .models import ContainerDefinition, BaseArgs
-from .utils import ContainerManger
+from .utils import ContainerManager
 
-logger = logging.Logger("sucks")
+logger = logging.getLogger("sucks")
 
 def main():
     logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARNING").upper())
@@ -31,5 +31,5 @@ def main():
         if not client.ping():
             logging.critical("Cannot communicate with podman socket")
             exit(1)
-        args.conman = ContainerManger(args.container, client)
+        args.conman = ContainerManager(args.container, client)
         sucks.commands.COMMANDS[args.command].run_command(args, client)

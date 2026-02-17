@@ -6,18 +6,18 @@ from podman.domain.containers import Container
 from sucks.models import ContainerDefinition
 from typing import Dict, List
 
-class ContainerManger:
-    _defintion: ContainerDefinition
+class ContainerManager:
+    _definition: ContainerDefinition
     _client: podman.PodmanClient
     _logger: logging.Logger
 
     @property
     def _container(self) -> Container:
-        return self._client.containers.get(self._defintion.container_name)
+        return self._client.containers.get(self._definition.container_name)
 
     @property
     def _container_name(self) -> str:
-        return self._defintion.container_name
+        return self._definition.container_name
 
     def _parse_volume_strs(self, vols: List[str]) -> Dict[str, object]:
         output = {}
@@ -42,7 +42,7 @@ class ContainerManger:
         return output
 
     def __init__(self, container_def: ContainerDefinition, client: podman.PodmanClient):
-        self._defintion = container_def
+        self._definition = container_def
         self._client = client
         self._logger = logging.getLogger("sucks")
 
@@ -58,7 +58,7 @@ class ContainerManger:
 
     def pull(self) -> bool:
         try:
-            self._client.images.pull(self._defintion.image)
+            self._client.images.pull(self._definition.image)
         except podman.errors.APIError as e:
             self._logger.info(e)
             return False
@@ -67,7 +67,7 @@ class ContainerManger:
     def create(self, privileged: bool = False, volumes: List[str] = []) -> bool:
         try:
             self._client.containers.create(
-                self._defintion.image,
+                self._definition.image,
                 name=self._container_name,
                 auto_remove=True,
                 privileged=privileged,
@@ -84,13 +84,13 @@ class ContainerManger:
             cmd.append("-i")
         if tty:
             cmd.append("-t")
-        if workdir != None:
+        if workdir is not None:
             cmd.extend(["-w", workdir])
         cmd.append(self._container_name)
         cmd.extend(command)
 
         self._logger.debug(f"Running \"{" ".join(cmd)}\"")
         proc = subprocess.run(cmd)
-        self._logger.debug(f"Recevied rtc {proc.returncode}")
+        self._logger.debug(f"Received return code {proc.returncode}")
 
         return proc.returncode
