@@ -12,9 +12,13 @@ class Shell(Command):
         ShellArgs.add_args(parser)
 
     def run_command(self, args: ShellArgs, client: podman.PodmanClient):
-        new_args: RunArgs = args
-        new_args.interactive = True
-        new_args.tty = True
-        new_args.exec_command = [args.shell_command]
-        new_args.workdir = "/root"
-        RunCommand().run_command(new_args, client)
+        if not args.conman.exists():
+            self._logger.critical(f"Container {args.container.container_name} does not exist")
+            exit(1)
+        exit(
+            args.conman.exec(
+                [args.shell_command],
+                tty=True,
+                interactive=True
+            )
+        )

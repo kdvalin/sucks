@@ -1,5 +1,6 @@
 import podman
 import logging
+import subprocess
 
 from podman.domain.containers import Container
 from sucks.models import ContainerDefinition
@@ -13,6 +14,10 @@ class ContainerManger:
     @property
     def _container(self) -> Container:
         return self._client.containers.get(self._defintion.container_name)
+
+    @property
+    def _container_name(self) -> str:
+        return self._defintion.container_name
 
     def _parse_volume_strs(self, vols: List[str]) -> Dict[str, object]:
         output = {}
@@ -42,7 +47,7 @@ class ContainerManger:
         self._logger = logging.getLogger("sucks")
 
     def exists(self) -> bool:
-        return self._client.containers.exists(self._defintion.container_name)
+        return self._client.containers.exists(self._container_name)
 
     def kill(self) -> bool:
         try:
@@ -63,7 +68,7 @@ class ContainerManger:
         try:
             self._client.containers.create(
                 self._defintion.image,
-                name=self._defintion.container_name,
+                name=self._container_name,
                 auto_remove=True,
                 privileged=privileged,
                 volumes=self._parse_volume_strs(volumes)
@@ -72,3 +77,20 @@ class ContainerManger:
             self._logger.info(e)
             return False
         return True
+    
+    def exec(self, command: List[str], tty: bool = False, interactive: bool = False, workdir: str = None) -> int:
+        cmd = ["podman", "exec"]
+        if interactive:
+            cmd.append("-i")
+        if tty:
+            cmd.append("-t")
+        if workdir != None:
+            cmd.extend(["-w", workdir])
+        cmd.append(self._container_name)
+        cmd.extend(command)
+
+        self._logger.debug(f"Running \"{" ".join(cmd)}\"")
+        proc = subprocess.run(cmd)
+        self._logger.debug(f"Recevied rtc {proc.returncode}")
+
+        return proc.returncode
