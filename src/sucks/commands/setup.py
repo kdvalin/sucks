@@ -37,30 +37,27 @@ class Setup(Command):
         SetupArgs.add_args(parser)
 
 
-    def run_command(self, args: SetupArgs, client: podman.PodmanClient):
-        container_def: ContainerDefinition = args.container
-        container_name = f"sucks-{container_def.filename}"
-        
-        if client.containers.exists(container_name):
-            self._logger.error(f"Container {container_name} already exists")
+    def run_command(self, args: SetupArgs, client: podman.PodmanClient):        
+        if client.containers.exists(args.container.container_name):
+            self._logger.error(f"Container {args.container.container_name} already exists")
             exit(1)
         
         try:
-            client.images.pull(container_def.image)
+            client.images.pull(args.container.image)
         except podman.errors.APIError as e:
-            self._logger.critical(f"Could not pull {container_def.image}")
+            self._logger.critical(f"Could not pull {args.container.image}")
             self._logger.critical(e)
             exit(1)
         
         try:
             client.containers.create(
-                container_def.image,
-                name=container_name,
+                args.container.image,
+                name=args.container.container_name,
                 auto_remove=True,
                 privileged=args.privileged,
                 volumes=self._parse_volume_strs(args.volume)
             ).start()
         except podman.errors.APIError as e:
-            self._logger.critical(f"Could not start contianer")
+            self._logger.critical(f"Could not start contianer {args.container.container_name}")
             self._logger.critical(e)
             exit(1)

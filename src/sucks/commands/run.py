@@ -13,14 +13,11 @@ class RunCommand(Command):
         RunArgs.add_args(parser)
 
     def run_command(self, args: RunArgs, client: podman.PodmanClient):
-        container_def: ContainerDefinition = args.container
-        container_name = f"sucks-{container_def.filename}"
-
-        if not client.containers.exists(container_name):
-            self._logger.critical(f"No container named {container_name} exists")
+        if not client.containers.exists(args.container.container_name):
+            self._logger.critical(f"No container named {args.container.container_name} exists")
             exit(1)
         
-        self._logger.info(f"Running \"{" ".join(args.exec_command)}\" in {container_name}")
+        self._logger.info(f"Running \"{" ".join(args.exec_command)}\" in {args.container.container_name}")
 
         cmd = ["podman", "exec"]
         if args.tty or args.interactive:
@@ -28,7 +25,7 @@ class RunCommand(Command):
         
         if args.workdir != None:
             cmd.extend(["-w", args.workdir])
-        cmd.append(container_name)
+        cmd.append(args.container.container_name)
         cmd.extend(args.exec_command)
 
         proc = subprocess.run(cmd)

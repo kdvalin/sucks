@@ -16,4 +16,5 @@ class Shell(Command):
         new_args.interactive = True
         new_args.tty = True
         new_args.exec_command = [args.shell_command]
+        new_args.workdir = "/root"
         RunCommand().run_command(new_args, client)

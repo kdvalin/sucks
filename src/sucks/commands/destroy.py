@@ -12,14 +12,12 @@ class Destroy(Command):
         parser = subparser.add_parser(self._command)
 
     def run_command(self, args: BaseArgs, client: podman.PodmanClient):
-        target_container: ContainerDefinition = args.container
-        container_name = f"sucks-{target_container.filename}"
-        self._logger.info(f"Tearing down container named {container_name}")        
+        self._logger.info(f"Tearing down container named {args.container.container_name}")        
 
-        if not client.containers.exists(container_name):
-            self._logger.error(f"Container sucks-{target_container.filename} does not exist")
+        if not client.containers.exists(args.container.container_name):
+            self._logger.error(f"Container {args.container.container_name} does not exist")
             exit(1)
-        self._logger.debug(f"Found container {container_name}")        
+        self._logger.debug(f"Found container {args.container.container_name}")
 
-        client.containers.get(container_name).kill()
+        client.containers.get(args.container.container_name).kill()
         self._logger.debug("Sent kill command")
