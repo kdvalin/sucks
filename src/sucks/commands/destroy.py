@@ -19,5 +19,5 @@ class Destroy(Command):
             exit(1)
         self._logger.debug(f"Found container {args.container.container_name}")
 
-        client.containers.get(args.container.container_name).kill()
+        args.conman.kill()
         self._logger.debug("Sent kill command")
