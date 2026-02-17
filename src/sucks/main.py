@@ -19,7 +19,7 @@ def main():
     parser.add_argument("container_yaml_file", type=argparse.FileType('r'))
     parser.add_argument("--version", action="version", version=__version__)
     
-    subparsers = parser.add_subparsers(help="subcommand help", dest="command")
+    subparsers = parser.add_subparsers(help="subcommand help", dest="command", required=True)
     sucks.commands.setup_commands(subparsers)
     args: BaseArgs = parser.parse_args()
 
