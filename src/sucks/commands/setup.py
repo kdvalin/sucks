@@ -32,3 +32,12 @@ class Setup(Command):
         if not create_result:
             self._logger.critical(f"Could not start contianer {args.container.container_name}")
             exit(1)
+        
+        for step in args.container.initSteps:
+            rtc = args.conman.exec(
+                step.split(' ')
+            )
+
+            if rtc != 0:
+                self._logger.critical(f"Init step \"{step}\" exited with code {rtc}, exiting")
+                exit(rtc)
