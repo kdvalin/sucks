@@ -8,7 +8,8 @@ import pathlib
 
 from . import __version__
 import sucks.commands
-from .models import ContainerDefinition
+from .models import ContainerDefinition, BaseArgs
+from .utils import ContainerManger
 
 logger = logging.Logger("sucks")
 
@@ -21,7 +22,7 @@ def main():
     
     subparsers = parser.add_subparsers(help="subcommand help", dest="command")
     sucks.commands.setup_commands(subparsers)
-    args = parser.parse_args()
+    args: BaseArgs = parser.parse_args()
 
     container_obj = yaml.safe_load(args.container_yaml_file)
     args.container = ContainerDefinition(**container_obj, filename=pathlib.Path(args.container_yaml_file.name).stem)
@@ -30,4 +31,5 @@ def main():
         if not client.ping():
             logging.critical("Cannot communicate with podman socket")
             exit(1)
+        args.conman = ContainerManger(args.container, client)
         sucks.commands.COMMANDS[args.command].run_command(args, client)

@@ -14,7 +14,7 @@ class Destroy(Command):
     def run_command(self, args: BaseArgs, client: podman.PodmanClient):
         self._logger.info(f"Tearing down container named {args.container.container_name}")        
 
-        if not client.containers.exists(args.container.container_name):
+        if not args.conman.exists():
             self._logger.error(f"Container {args.container.container_name} does not exist")
             exit(1)
         self._logger.debug(f"Found container {args.container.container_name}")

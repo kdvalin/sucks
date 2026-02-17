@@ -2,10 +2,12 @@ import argparse
 from typing import List
 
 from .container_file import ContainerDefinition
+from sucks.utils import ContainerManger
 
 class BaseArgs(argparse.Namespace):
     container_yaml_file: str
     container: ContainerDefinition
+    conman: ContainerManger
 
 class SetupArgs(BaseArgs):
     volume: List[str]

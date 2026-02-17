@@ -38,7 +38,7 @@ class Setup(Command):
 
 
     def run_command(self, args: SetupArgs, client: podman.PodmanClient):        
-        if client.containers.exists(args.container.container_name):
+        if args.conman.exists():
             self._logger.error(f"Container {args.container.container_name} already exists")
             exit(1)
         

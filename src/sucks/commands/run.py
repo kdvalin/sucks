@@ -13,7 +13,7 @@ class RunCommand(Command):
         RunArgs.add_args(parser)
 
     def run_command(self, args: RunArgs, client: podman.PodmanClient):
-        if not client.containers.exists(args.container.container_name):
+        if not args.conman.exists():
             self._logger.critical(f"No container named {args.container.container_name} exists")
             exit(1)
         
