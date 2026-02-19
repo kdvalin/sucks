@@ -13,3 +13,15 @@ class ContainerDefinition(pydantic.BaseModel):
     @property
     def container_name(self):
         return f"sucks-{self.filename}"
+    
+    @property
+    def image_name(self) -> str:
+        return self.image.split(':')[0]
+    
+    @property
+    def image_tag(self) -> str:
+        image_split = self.image.split(':')
+
+        if len(image_split) > 1:
+            return image_split[1]
+        return "latest"

@@ -60,9 +60,9 @@ class ContainerManager:
             return False
         return True
 
-    def pull(self) -> bool:
+    def pull(self, policy: str) -> bool:
         try:
-            self._client.images.pull(self._definition.image)
+            self._client.images.pull(self._definition.image_name, self._definition.image_tag, policy=policy)
         except podman.errors.APIError as e:
             self._logger.info(e)
             return False

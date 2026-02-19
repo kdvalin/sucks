@@ -16,9 +16,11 @@ class BaseArgs(argparse.Namespace):
 class SetupArgs(BaseArgs):
     volume: List[str]
     privileged: bool
+    pull: str
 
     def add_args(parser: argparse.ArgumentParser):
         parser.add_argument("-v", "--volume", type=str, action="append", help="A podman volume string to mount a host dir into the container", default=[])
+        parser.add_argument("--pull", choices=['always', 'missing', 'never', 'newer'], help="Sets when to pull an image", default="missing")
         parser.add_argument("--privileged", action="store_true", help="Give extended privileges to the container", default=False)
         BaseArgs.add_args(parser)
 

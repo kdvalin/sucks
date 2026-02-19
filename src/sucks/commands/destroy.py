@@ -9,6 +9,7 @@ class Destroy(Command):
 
     def cli_opts(self, subparser: argparse._SubParsersAction):
         parser = subparser.add_parser(self._command)
+        BaseArgs.add_args(parser)
 
     def run_command(self, args: BaseArgs, client: podman.PodmanClient):
         self._logger.info(f"Tearing down container named {args.container.container_name}")        

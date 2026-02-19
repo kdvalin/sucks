@@ -9,6 +9,7 @@ class CICommand(Command):
 
     def cli_opts(self, subparser: argparse._SubParsersAction):
         parser = subparser.add_parser(self._command)
+        BaseArgs.add_args(parser)
     
     def run_command(self, args: BaseArgs, client):
         if not args.conman.exists():

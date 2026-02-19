@@ -18,7 +18,7 @@ class Setup(Command):
             self._logger.error(f"Container {args.container.container_name} already exists")
             exit(1)
 
-        if not args.conman.pull():
+        if not args.conman.pull(args.pull):
             self._logger.critical(f"Could not pull {args.container.image}")
             exit(1)
 
