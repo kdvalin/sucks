@@ -19,6 +19,7 @@ class Shell(Command):
             args.conman.exec(
                 [args.shell_command],
                 tty=True,
-                interactive=True
+                interactive=True,
+                workdir=args.workdir
             )
         )

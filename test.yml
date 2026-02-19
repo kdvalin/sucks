@@ -1,5 +1,6 @@
 name: bob
 image: registry.access.redhat.com/ubi9-init
+workdir: /opt
 initSteps:
   - dnf install -y git jq
 ciSteps:

@@ -8,6 +8,7 @@ class ContainerDefinition(pydantic.BaseModel):
     initSteps: List[str] = pydantic.Field(help="List of initialization steps to be ran at startup", default=[])
     filename: str = pydantic.Field(help="The name of the file these details were sourced from, if this is not set something went _very_ wrong")
     ciSteps: List[str]  = pydantic.Field(help="List of initialization steps to be ran when the ci command is invoked", default=[])
+    workdir: str = pydantic.Field(help="Sets the default working directory of setup, run, shell, and ci can be overriden with -w/--workdir", default=None)
 
     @property
     def container_name(self):

@@ -25,6 +25,9 @@ def main():
 
     container_obj = yaml.safe_load(args.container_yaml_file)
     args.container = ContainerDefinition(**container_obj, filename=pathlib.Path(args.container_yaml_file.name).stem)
+    
+    if args.workdir is None and args.container.workdir is not None:
+        args.workdir = args.container.workdir
 
     with podman.PodmanClient() as client:
         if not client.ping():
