@@ -7,6 +7,12 @@ dependencies = [
     "podman"
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-mock",
+    "ruff",
+]
 
 [project.scripts]
 sucks="sucks.main:main"
@@ -14,3 +20,17 @@ sucks="sucks.main:main"
 [tool.setuptools.dynamic]
 version = {attr = "sucks.__version__"}
 readme = {file=["README.md"]}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+]
