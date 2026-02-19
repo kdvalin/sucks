@@ -4,7 +4,7 @@ import subprocess
 
 from podman.domain.containers import Container
 from sucks.models import ContainerDefinition
-from typing import Dict, List, Union
+from typing import Dict, List, Optional
 
 class ContainerManager:
     _definition: ContainerDefinition
@@ -19,7 +19,7 @@ class ContainerManager:
     def _container_name(self) -> str:
         return self._definition.container_name
 
-    def _parse_volume_strs(self, vols: Union[List[str] | None]) -> Dict[str, object]:
+    def _parse_volume_strs(self, vols: Optional[List[str]]) -> Dict[str, object]:
         output = {}
 
         if vols is None:
