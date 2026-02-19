@@ -1,8 +1,7 @@
 import abc
+import argparse
 import logging
 
-import argparse
-from typing import Dict
 
 class Command(abc.ABC):
     _command = "noop"

@@ -1,10 +1,11 @@
-import podman
 import logging
 import subprocess
 
+import podman
 from podman.domain.containers import Container
+
 from sucks.models import ContainerDefinition
-from typing import Dict, List, Optional
+
 
 class ContainerManager:
     _definition: ContainerDefinition
@@ -19,28 +20,30 @@ class ContainerManager:
     def _container_name(self) -> str:
         return self._definition.container_name
 
-    def _parse_volume_strs(self, vols: Optional[List[str]]) -> Dict[str, object]:
+    def _parse_volume_strs(self, vols: list[str] | None) -> dict[str, object]:
         output = {}
 
         if vols is None:
             return output
 
         for vol in vols:
-            vol_args = vol.split(':')
+            vol_args = vol.split(":")
 
             if len(vol_args) < 2 or len(vol_args) > 3:
-                self._logger.warning(f"Volume string {vol} does not match expected format, skipping")
+                self._logger.warning(
+                    f"Volume string {vol} does not match expected format, skipping"
+                )
                 continue
-            
+
             host_dir = vol_args[0]
             container_dir = vol_args[1]
             extended_opts = []
             if len(vol_args) == 3:
-                extended_opts = vol_args[2].split(',')
+                extended_opts = vol_args[2].split(",")
 
             output[host_dir] = {
-                'bind': container_dir,
-                'extended_mode': extended_opts,
+                "bind": container_dir,
+                "extended_mode": extended_opts,
             }
         return output
 
@@ -62,27 +65,35 @@ class ContainerManager:
 
     def pull(self, policy: str) -> bool:
         try:
-            self._client.images.pull(self._definition.image_name, self._definition.image_tag, policy=policy)
+            self._client.images.pull(
+                self._definition.image_name, self._definition.image_tag, policy=policy
+            )
         except podman.errors.APIError as e:
             self._logger.info(e)
             return False
         return True
 
-    def create(self, privileged: bool = False, volumes: List[str] = None) -> bool:
+    def create(self, privileged: bool = False, volumes: list[str] = None) -> bool:
         try:
             self._client.containers.create(
                 self._definition.image,
                 name=self._container_name,
                 auto_remove=True,
                 privileged=privileged,
-                volumes=self._parse_volume_strs(volumes)
+                volumes=self._parse_volume_strs(volumes),
             ).start()
         except podman.errors.APIError as e:
             self._logger.error(e)
             return False
         return True
-    
-    def exec(self, command: List[str], tty: bool = False, interactive: bool = False, workdir: str = None) -> int:
+
+    def exec(
+        self,
+        command: list[str],
+        tty: bool = False,
+        interactive: bool = False,
+        workdir: str = None,
+    ) -> int:
         cmd = ["podman", "exec"]
         if interactive:
             cmd.append("-i")
@@ -93,7 +104,7 @@ class ContainerManager:
         cmd.append(self._container_name)
         cmd.extend(command)
 
-        self._logger.debug(f"Running \"{" ".join(cmd)}\"")
+        self._logger.debug(f'Running "{" ".join(cmd)}"')
         proc = subprocess.run(cmd)
         self._logger.debug(f"Received return code {proc.returncode}")
 

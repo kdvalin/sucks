@@ -1,8 +1,9 @@
 import argparse
-from typing import List
+
+from sucks.utils import ContainerManager
 
 from .container_file import ContainerDefinition
-from sucks.utils import ContainerManager
+
 
 class BaseArgs(argparse.Namespace):
     container_yaml_file: str
@@ -12,35 +13,76 @@ class BaseArgs(argparse.Namespace):
 
     @staticmethod
     def add_args(parser: argparse.ArgumentParser):
-        parser.add_argument('-w', '--workdir', type=str, help="Sets the workdir that the setup, ci, run, and shell commands run in", default=None)
+        parser.add_argument(
+            "-w",
+            "--workdir",
+            type=str,
+            help="Sets the workdir that the setup, ci, run, and shell commands run in",
+            default=None,
+        )
+
 
 class SetupArgs(BaseArgs):
-    volume: List[str]
+    volume: list[str]
     privileged: bool
     pull: str
 
     @staticmethod
     def add_args(parser: argparse.ArgumentParser):
-        parser.add_argument("-v", "--volume", type=str, action="append", help="A podman volume string to mount a host dir into the container", default=[])
-        parser.add_argument("--pull", choices=['always', 'missing', 'never', 'newer'], help="Sets when to pull an image", default="missing")
-        parser.add_argument("--privileged", action="store_true", help="Give extended privileges to the container", default=False)
+        parser.add_argument(
+            "-v",
+            "--volume",
+            type=str,
+            action="append",
+            help="A podman volume string to mount a host dir into the container",
+            default=[],
+        )
+        parser.add_argument(
+            "--pull",
+            choices=["always", "missing", "never", "newer"],
+            help="Sets when to pull an image",
+            default="missing",
+        )
+        parser.add_argument(
+            "--privileged",
+            action="store_true",
+            help="Give extended privileges to the container",
+            default=False,
+        )
         BaseArgs.add_args(parser)
 
 
 class RunArgs(BaseArgs):
     workdir: str
-    env: List[str]
+    env: list[str]
     interactive: bool
     tty: bool
-    exec_command: List[str]
+    exec_command: list[str]
 
     @staticmethod
     def add_args(parser: argparse.ArgumentParser):
-        parser.add_argument("-e", "--env", help="Set environment variables", action="append", default=[])
-        parser.add_argument("-i", "--interactive", help="Pass stdin to the command", action="store_true", default=False)
-        parser.add_argument("-t", "--tty", help="Allocate a pseudo-TTY", action="store_true", default=False)
+        parser.add_argument(
+            "-e", "--env", help="Set environment variables", action="append", default=[]
+        )
+        parser.add_argument(
+            "-i",
+            "--interactive",
+            help="Pass stdin to the command",
+            action="store_true",
+            default=False,
+        )
+        parser.add_argument(
+            "-t",
+            "--tty",
+            help="Allocate a pseudo-TTY",
+            action="store_true",
+            default=False,
+        )
         BaseArgs.add_args(parser)
-        parser.add_argument("exec_command", nargs="+", help="The command to run within the container")
+        parser.add_argument(
+            "exec_command", nargs="+", help="The command to run within the container"
+        )
+
 
 class ShellArgs(BaseArgs):
     shell_command: str
@@ -48,4 +90,10 @@ class ShellArgs(BaseArgs):
     @staticmethod
     def add_args(parser: argparse.ArgumentParser):
         BaseArgs.add_args(parser)
-        parser.add_argument("-s", "--shell_command", help="The command to run for the shell", default="bash", type=str)
+        parser.add_argument(
+            "-s",
+            "--shell_command",
+            help="The command to run for the shell",
+            default="bash",
+            type=str,
+        )

@@ -1,8 +1,10 @@
 import argparse
+
 import podman
 
-from ._base import Command
 from ..models import BaseArgs
+from ._base import Command
+
 
 class Destroy(Command):
     _command = "destroy"
@@ -12,10 +14,14 @@ class Destroy(Command):
         BaseArgs.add_args(parser)
 
     def run_command(self, args: BaseArgs, client: podman.PodmanClient):
-        self._logger.info(f"Tearing down container named {args.container.container_name}")        
+        self._logger.info(
+            f"Tearing down container named {args.container.container_name}"
+        )
 
         if not args.conman.exists():
-            self._logger.error(f"Container {args.container.container_name} does not exist")
+            self._logger.error(
+                f"Container {args.container.container_name} does not exist"
+            )
             exit(1)
         self._logger.debug(f"Found container {args.container.container_name}")
 

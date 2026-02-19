@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from sucks.models.container_file import ContainerDefinition
 from sucks.utils.container import ContainerManager
