@@ -93,6 +93,7 @@ class ContainerManager:
         tty: bool = False,
         interactive: bool = False,
         workdir: str = None,
+        env: list[str] = None
     ) -> int:
         cmd = ["podman", "exec"]
         if interactive:
@@ -101,6 +102,9 @@ class ContainerManager:
             cmd.append("-t")
         if workdir is not None:
             cmd.extend(["-w", workdir])
+        if env is not None:
+            for env_var in env:
+                cmd.extend(["-e", env_var])
         cmd.append(self._container_name)
         cmd.extend(command)
 

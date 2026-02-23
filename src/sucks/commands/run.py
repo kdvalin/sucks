@@ -23,6 +23,6 @@ class RunCommand(Command):
 
         exit(
             args.conman.exec(
-                args.exec_command, args.tty, args.interactive, args.workdir
+                args.exec_command, args.tty, args.interactive, args.workdir, args.env
             )
         )
