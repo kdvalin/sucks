@@ -4,7 +4,7 @@ import subprocess
 import podman
 from podman.domain.containers import Container
 
-from sucks.models import ContainerDefinition
+from sucks.models.container_file import ContainerDefinition
 
 
 class ContainerManager:

@@ -10,4 +10,4 @@ from .args import (
 from .args import (
     ShellArgs as ShellArgs,
 )
-from .container_file import ContainerDefinition as ContainerDefinition
+from .container_file import ContainerDefinition
