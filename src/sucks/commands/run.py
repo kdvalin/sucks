@@ -3,6 +3,7 @@ import argparse
 import podman
 
 from sucks.models import RunArgs
+from sucks.utils import SucksException
 
 from ._base import Command
 
@@ -19,10 +20,10 @@ class RunCommand(Command):
             self._logger.critical(
                 f"No container named {args.container.container_name} exists"
             )
-            exit(1)
+            raise SucksException(1)
 
-        exit(
-            args.conman.exec(
+        rtc = args.conman.exec(
                 args.exec_command, args.tty, args.interactive, args.workdir, args.env
             )
-        )
+        if rtc != 0:
+            raise SucksException(rtc)

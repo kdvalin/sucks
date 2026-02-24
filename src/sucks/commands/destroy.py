@@ -3,6 +3,7 @@ import argparse
 import podman
 
 from ..models import BaseArgs
+from ..utils import SucksException
 from ._base import Command
 
 
@@ -22,7 +23,7 @@ class Destroy(Command):
             self._logger.error(
                 f"Container {args.container.container_name} does not exist"
             )
-            exit(1)
+            raise SucksException(1)
         self._logger.debug(f"Found container {args.container.container_name}")
 
         args.conman.kill()

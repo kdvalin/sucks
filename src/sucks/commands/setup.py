@@ -4,6 +4,7 @@ import shlex
 import podman
 
 from sucks.models import SetupArgs
+from sucks.utils import SucksException
 
 from ._base import Command
 
@@ -20,11 +21,11 @@ class Setup(Command):
             self._logger.error(
                 f"Container {args.container.container_name} already exists"
             )
-            exit(1)
+            raise SucksException(1)
 
         if not args.conman.pull(args.pull):
             self._logger.critical(f"Could not pull {args.container.image}")
-            exit(1)
+            raise SucksException(1)
 
         create_result = args.conman.create(
             privileged=args.privileged, volumes=args.volume
@@ -34,7 +35,7 @@ class Setup(Command):
             self._logger.critical(
                 f"Could not start container {args.container.container_name}"
             )
-            exit(1)
+            raise SucksException(1)
 
         for step in args.container.initSteps:
             rtc = args.conman.exec(shlex.split(step))
@@ -43,4 +44,4 @@ class Setup(Command):
                 self._logger.critical(
                     f'Init step "{step}" exited with code {rtc}, exiting'
                 )
-                exit(rtc)
+                raise SucksException(rtc)

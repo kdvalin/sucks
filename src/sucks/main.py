@@ -10,7 +10,7 @@ import sucks.commands
 
 from . import __version__
 from .models import BaseArgs, ContainerDefinition
-from .utils import ContainerManager
+from .utils import ContainerManager, SucksException
 
 logger = logging.getLogger("sucks")
 
@@ -41,4 +41,7 @@ def main():
             logging.critical("Cannot communicate with podman socket")
             exit(1)
         args.conman = ContainerManager(args.container, client)
-        sucks.commands.COMMANDS[args.command].run_command(args, client)
+        try:
+            sucks.commands.COMMANDS[args.command].run_command(args, client)
+        except SucksException as e:
+            exit(e.rtc)

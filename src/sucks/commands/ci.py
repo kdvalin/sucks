@@ -2,6 +2,7 @@ import argparse
 import shlex
 
 from sucks.models import BaseArgs
+from sucks.utils import SucksException
 
 from ._base import Command
 
@@ -18,7 +19,7 @@ class CICommand(Command):
             self._logger.error(
                 f"Container {args.container.container_name} does not exist"
             )
-            exit(1)
+            raise SucksException(1)
 
         for step in args.container.ciSteps:
             rtc = args.conman.exec(shlex.split(step))
@@ -27,4 +28,4 @@ class CICommand(Command):
                 self._logger.critical(
                     f'CI step "{step}" exited with code {rtc}, exiting'
                 )
-                exit(rtc)
+                raise SucksException(rtc)
