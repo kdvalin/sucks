@@ -1,10 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "sucks"
-dynamic = ["version"]
+name = "container-sucks"
+dynamic = ["version", "readme"]
+description = "A simple container management system for systemd-based containers, requires podman"
+authors = [
+    {name = "Keith Valin", email = "kvalin@redhat.com"}
+]
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Topic :: System :: Systems Administration",
+    "Operating System :: POSIX :: Linux",
+]
 dependencies = [
     "PyYAML",
     "pydantic",
-    "podman"
+    "podman",
 ]
 
 [project.optional-dependencies]
@@ -15,11 +32,17 @@ dev = [
 ]
 
 [project.scripts]
-sucks="sucks.main:main"
+sucks = "sucks.main:main"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.dynamic]
 version = {attr = "sucks.__version__"}
-readme = {file=["README.md"]}
+readme = {file = ["README.md"]}
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
