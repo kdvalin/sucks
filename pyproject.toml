@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "container-sucks"
-dynamic = ["version", "readme"]
+dynamic = ["version"]
 description = "A simple container management system for systemd-based containers, requires podman"
 authors = [
     {name = "Keith Valin", email = "kvalin@redhat.com"}
@@ -42,7 +42,6 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 version = {attr = "sucks.__version__"}
-readme = {file = ["README.md"]}
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
