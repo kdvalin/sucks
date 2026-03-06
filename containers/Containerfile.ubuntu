@@ -1,4 +1,5 @@
-FROM docker.io/library/ubuntu:24.04
+ARG VERSION=24.04
+FROM docker.io/library/ubuntu:${VERSION}
 
 RUN apt update && apt install -y systemd && apt clean
 

@@ -1,0 +1,60 @@
+name: Build Systemd Containers
+
+on:
+  schedule:
+    - cron: "7 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  build_container:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - file: containers/Containerfile.amazon
+            image: quay.io/zathras/amazonlinux-init
+            version: "2023"
+          - file: containers/Containerfile.ubuntu
+            image: quay.io/zathras/ubuntu-init
+            version: "24.04"
+          - file: containers/Containerfile.sles
+            image: quay.io/zathras/sles-init
+            version: "15.7"
+          - file: containers/Containerfile.centos
+            image: quay.io/zathras/centos-init
+            version: "stream10"
+          - file: containers/Containerfile.centos
+            image: quay.io/zathras/centos-init
+            version: "stream9"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Quay
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_UNAME }}
+          password: ${{ secrets.QUAY_PASSWD }}
+      
+      - name: Generate timestamp
+        id: date_step
+        run: echo "timestamp=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
+        
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          build-args: |
+            VERSION=${{ matrix.version }}
+          tags: |
+            ${{ matrix.image }}:${{ matrix.version }}
+            ${{ matrix.image }}:${{ matrix.version }}-latest
+            ${{ matrix.image }}:${{ matrix.version }}-${{ steps.date_step.outputs.timestamp }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+          file: ${{ matrix.file }}

@@ -1,0 +1,6 @@
+ARG VERSION=stream10
+FROM quay.io/centos/centos:${VERSION}
+
+RUN dnf install -y systemd && dnf clean all
+
+ENTRYPOINT [ "/sbin/init" ]

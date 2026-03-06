@@ -1,0 +1,6 @@
+ARG VERSION=2023
+FROM public.ecr.aws/amazonlinux/amazonlinux:${VERSION}
+
+RUN dnf install -y systemd && dnf clean all
+
+ENTRYPOINT [ "/sbin/init" ]

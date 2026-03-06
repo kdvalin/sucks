@@ -1,0 +1,6 @@
+ARG VERSION=15.7
+FROM registry.suse.com/bci/bci-base:${VERSION}
+
+RUN zypper install -y systemd
+
+ENTRYPOINT [ "/sbin/init" ]
