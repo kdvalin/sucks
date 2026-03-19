@@ -2,7 +2,7 @@ name: Build Systemd Containers
 
 on:
   schedule:
-    - cron: "7 2 * * *"
+    - cron: "7 2 * * 3"
   workflow_dispatch:
 
 jobs:
