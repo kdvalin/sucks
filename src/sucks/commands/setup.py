@@ -17,7 +17,7 @@ class Setup(Command):
         SetupArgs.add_args(parser)
 
     def run_command(self, args: SetupArgs, client: podman.PodmanClient):
-        if len(args.ports) == 0:
+        if len(args.ports) == 0 and len(args.container.ports) > 0:
             args.ports = args.container.ports
 
         if args.conman.exists():

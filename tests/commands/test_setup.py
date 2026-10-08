@@ -16,13 +16,13 @@ def conman():
     return MagicMock()
 
 class TestSetup:
-    @pytest.mark.parametrize('privs,vols', [
-        (True, ["a","b","c"]),
-        (False, ["a","b","c"]),
-        (True, []),
-        (False, [])
+    @pytest.mark.parametrize('privs,vols,ports', [
+        (True, ["a","b","c"], ["1:1", "2:2"]),
+        (False, ["a","b","c"], ["1:1"]),
+        (True, [], ["1:1", "2:2"]),
+        (False, [], [])
     ])
-    def test_bare_setup(self, conman, container, privs, vols):
+    def test_bare_setup(self, conman, container, privs, vols, ports):
         conman.exists = MagicMock(return_value=False)
         conman.pull = MagicMock(return_value=True)
         conman.create = MagicMock(return_value=True)
@@ -34,13 +34,14 @@ class TestSetup:
             pull="missing",
             privileged=privs,
             volume=vols,
-            container=container
+            container=container,
+            ports=ports
         )
         Setup().run_command(setup_args, None)
 
         assert conman.exists.called
         conman.pull.assert_called_once_with("missing")
-        conman.create.assert_called_once_with(privileged=privs, volumes=vols)
+        conman.create.assert_called_once_with(privileged=privs, volumes=vols, ports=ports)
 
     def test_container_exists(self, conman, container):
         conman.exists = MagicMock(return_value=True)
@@ -50,7 +51,8 @@ class TestSetup:
             pull="missing",
             privileged=False,
             volume=[],
-            container=container
+            container=container,
+            ports=[]
         )
         with pytest.raises(SucksException):
             Setup().run_command(setup_args, None)
@@ -68,7 +70,8 @@ class TestSetup:
             pull="missing",
             privileged=False,
             volume=[],
-            container=container
+            container=container,
+            ports=[]
         )
         with pytest.raises(SucksException):
             Setup().run_command(setup_args, None)
@@ -85,7 +88,8 @@ class TestSetup:
             pull="missing",
             privileged=False,
             volume=[],
-            container=container
+            container=container,
+            ports=[]
         )
 
         with pytest.raises(SucksException):
@@ -93,7 +97,7 @@ class TestSetup:
 
         assert conman.exists.called
         conman.pull.assert_called_once_with("missing")
-        conman.create.assert_called_once_with(privileged=False, volumes=[])
+        conman.create.assert_called_once_with(privileged=False, volumes=[], ports=[])
 
 
     def test_failed_init_start(self, conman, container):
@@ -109,7 +113,8 @@ class TestSetup:
             pull="missing",
             privileged=False,
             volume=[],
-            container=container
+            container=container,
+            ports=[]
         )
 
         with pytest.raises(SucksException):
@@ -117,7 +122,7 @@ class TestSetup:
 
         assert conman.exists.called
         conman.pull.assert_called_once_with("missing")
-        conman.create.assert_called_once_with(privileged=False, volumes=[])
+        conman.create.assert_called_once_with(privileged=False, volumes=[], ports=[])
         conman.exec.assert_called_once_with(shlex.split(container.initSteps[0]))
 
     @pytest.mark.parametrize('initSteps', [
@@ -144,7 +149,8 @@ class TestSetup:
             pull="missing",
             privileged=False,
             volume=[],
-            container=container
+            container=container,
+            ports=[]
         )
 
         with pytest.raises(SucksException):
@@ -154,5 +160,5 @@ class TestSetup:
 
         assert conman.exists.called
         conman.pull.assert_called_once_with("missing")
-        conman.create.assert_called_once_with(privileged=False, volumes=[])
+        conman.create.assert_called_once_with(privileged=False, volumes=[], ports=[])
         assert conman.exec.mock_calls == [call(i) for i in initSteps]
