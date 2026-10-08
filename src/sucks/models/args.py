@@ -26,6 +26,7 @@ class SetupArgs(BaseArgs):
     volume: list[str]
     privileged: bool
     pull: str
+    ports: list[str]
 
     @staticmethod
     def add_args(parser: argparse.ArgumentParser):
@@ -48,6 +49,15 @@ class SetupArgs(BaseArgs):
             action="store_true",
             help="Give extended privileges to the container",
             default=False,
+        )
+        parser.add_argument(
+                "-p",
+                "--publish",
+                type=str,
+                action="append",
+                help="A port mapping from container to host",
+                default=[],
+                dest="ports"
         )
         BaseArgs.add_args(parser)
 

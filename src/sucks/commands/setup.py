@@ -17,6 +17,9 @@ class Setup(Command):
         SetupArgs.add_args(parser)
 
     def run_command(self, args: SetupArgs, client: podman.PodmanClient):
+        if len(args.ports) == 0:
+            args.ports = args.container.ports
+
         if args.conman.exists():
             self._logger.error(
                 f"Container {args.container.container_name} already exists"
@@ -28,7 +31,7 @@ class Setup(Command):
             raise SucksException(1)
 
         create_result = args.conman.create(
-            privileged=args.privileged, volumes=args.volume
+            privileged=args.privileged, volumes=args.volume, ports=args.ports
         )
 
         if not create_result:

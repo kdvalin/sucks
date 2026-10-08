@@ -20,6 +20,30 @@ class ContainerManager:
     def _container_name(self) -> str:
         return self._definition.container_name
 
+    def _parse_port_strs(self, ports: list[str] | None) -> dict[str, int]:
+        output = {}
+
+        for port in ports:
+            port_parts = port.split(':')
+
+            if len(port_parts) != 2:
+                self._logger.warn(
+                    f"Port string {port} does not match expected format, skipping"
+                )
+                continue
+            container_port = port_parts[0]
+            host_port = port_parts[1]
+            try:
+                output[container_port] = int(host_port)
+            except ValueError:
+                self._logger.warn(
+                    f"Host port is not an integer, skipping {host_port}"
+                )
+                continue
+        self._logger.info(output)
+        return output
+
+
     def _parse_volume_strs(self, vols: list[str] | None) -> dict[str, object]:
         output = {}
 
@@ -73,7 +97,7 @@ class ContainerManager:
             return False
         return True
 
-    def create(self, privileged: bool = False, volumes: list[str] = None) -> bool:
+    def create(self, privileged: bool = False, volumes: list[str] = None, ports: list[str] = []) -> bool:
         try:
             self._client.containers.create(
                 self._definition.image,
@@ -81,6 +105,7 @@ class ContainerManager:
                 auto_remove=True,
                 privileged=privileged,
                 volumes=self._parse_volume_strs(volumes),
+                ports=self._parse_port_strs(ports)
             ).start()
         except podman.errors.APIError as e:
             self._logger.error(e)

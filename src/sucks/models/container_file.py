@@ -34,6 +34,10 @@ class ContainerDefinition(pydantic.BaseModel):
         ),
         default=None,
     )
+    ports: list[str] = pydantic.Field(
+        description=("List of ports to bind to this container"),
+        default=[]
+    )
 
     @property
     def container_name(self):
