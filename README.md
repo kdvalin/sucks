@@ -49,6 +49,8 @@ Below is an example
 # Provided for human readability
 name: UBI 9 Init
 image: registry.access.redhat.com/ubi9-init # The image to use
+ports:
+    - "80:8080"
 initSteps: # The shell commands to run during `setup`
     - dnf install -y git
     - git clone example-repo.git
@@ -87,6 +89,11 @@ options.
 - `-w/--workdir <path>`
     - Sets the working dir of the commands in `initSteps`
     - This overrides `workDir` within the container defintion
+- `-p/--publish <port:mapping>`
+    - Publishes a port to the host machine
+    - See [here](https://docs.podman.io/en/v4.6.1/markdown/options/publish.html) for documentation on
+    accept strings.
+    - Can be specfied multiple times for multiple ports
 
 ### destroy
 `sucks <container_def_path> destroy`
